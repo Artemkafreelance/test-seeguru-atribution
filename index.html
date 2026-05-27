@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SeeGuru — Тест атрибуції (App Store / Play Store)</title>
+    <style>
+      :root {
+        font-family: system-ui, sans-serif;
+        --primary: #2563eb;
+        --secondary: #10b981;
+      }
+      body {
+        max-width: 40rem;
+        margin: 2rem auto;
+        padding: 0 1rem;
+        line-height: 1.5;
+        background-color: #f8fafc;
+      }
+      .card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        margin-bottom: 1.5rem;
+      }
+      h1 { color: #1e293b; margin-top: 0; }
+      h2 { font-size: 1.2rem; color: #334155; }
+      
+      .btn-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+      
+      button {
+        padding: 1rem;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        border-radius: 8px;
+        border: none;
+        color: #fff;
+        transition: opacity 0.2s;
+        text-align: center;
+        text-decoration: none;
+      }
+      
+      .btn-ios { background: #000; }
+      .btn-android { background: var(--secondary); }
+      .btn-web { background: var(--primary); }
+      
+      button:hover { opacity: 0.9; }
+      
+      code {
+        display: block;
+        margin-top: 0.5rem;
+        padding: 0.75rem;
+        background: #f1f5f9;
+        border-radius: 6px;
+        font-size: 0.8rem;
+        overflow-x: auto;
+        white-space: pre-wrap;
+        word-break: break-all;
+        color: #475569;
+      }
+      .label {
+        font-weight: bold;
+        font-size: 0.85rem;
+        color: #64748b;
+        margin-top: 1rem;
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <h1>SeeGuru: Тест атрибуції</h1>
+      <p>Ця сторінка імітує рекламний лендінг. Виберіть платформу для тестування переходу з UTM-мітками та GCLID.</p>
+    </div>
+
+    <div class="card">
+      <h2>1. Тест через прямі посилання (Stores)</h2>
+      <p><small>Використовує Universal Links та Play Referrer. Працює найкраще, якщо додаток вже встановлено або через механізми магазинів.</small></p>
+      
+      <div class="btn-group">
+        <button type="button" class="btn-ios" id="go-ios">Відкрити в App Store (iOS)</button>
+        <button type="button" class="btn-android" id="go-android">Відкрити в Play Store (Android)</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>2. Тест через Веб-сайт (Universal Links)</h2>
+      <p><small>Якщо Universal Links налаштовані вірно, клік по посиланню на домен <code>app.see.guru</code> має відкрити додаток напряму.</small></p>
+      <button type="button" class="btn-web" id="go-web">Відкрити app.see.guru (Web/Universal)</button>
+    </div>
+
+    <div class="card">
+      <span class="label">Поточні UTM та GCLID:</span>
+      <code id="debug-info"></code>
+    </div>
+
+    <script>
+      (function () {
+        // Генеруємо унікальний GCLID для кожного тесту
+        const gclid = "TEST_MOBILE_" + Math.random().toString(36).substring(2, 10).toUpperCase();
+        const utmParams = {
+          utm_source: "test_landing_page",
+          utm_medium: "mobile_test",
+          utm_campaign: "attribution_verification_" + new Date().toISOString().split('T')[0],
+          gclid: gclid
+        };
+
+        const queryString = new URLSearchParams(utmParams).toString();
+
+        // Посилання
+        const iosLink = "https://apps.apple.com/app/id1614008424?" + queryString;
+        const androidLink = "https://play.google.com/store/apps/details?id=guru.see.app&" + queryString;
+        const webLink = "https://app.see.guru/en/?" + queryString;
+
+        document.getElementById("debug-info").textContent = JSON.stringify(utmParams, null, 2);
+
+        document.getElementById("go-ios").onclick = () => window.location.href = iosLink;
+        document.getElementById("go-android").onclick = () => window.location.href = androidLink;
+        document.getElementById("go-web").onclick = () => window.location.href = webLink;
+      })();
+    </script>
+  </body>
+</html>
